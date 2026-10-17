@@ -3,148 +3,287 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pam Bendito TV — Directo</title>
-  <meta name="description" content="Sigue los directos de Pam Bendito TV en vivo. Iglesia de Pan Bendito — Manases Montoya." />
-  <meta property="og:title" content="Pam Bendito TV — Directo" />
-  <meta property="og:description" content="Sigue los directos de la Iglesia de Pan Bendito en vivo." />
-  <meta name="theme-color" content="#0a0a14" />
+  <title>PanBendito TV — Directo</title>
+  <meta name="description" content="Sigue los directos de PanBendito TV en vivo. Iglesia Evangelica Pan Bendito." />
+  <meta property="og:title" content="PanBendito TV — Directo" />
+  <meta property="og:description" content="Directos en vivo de la Iglesia Evangelica Pan Bendito." />
+  <meta name="theme-color" content="#0d1a2a" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
-      --bg: #0a0a14;
-      --accent: #6c4ef2;
-      --accent2: #a78bfa;
-      --red-live: #ff3b3b;
-      --text: #f0f0f0;
-      --text-muted: #888aaa;
+      --bg:        #0b1623;
+      --bg2:       #0f1e30;
+      --navy:      #1a2d42;
+      --silver:    #c8d4e0;
+      --silver2:   #a0b4c8;
+      --gold:      #d4e0ec;
+      --red-live:  #e03030;
+      --text:      #e8f0f8;
+      --text-muted:#7a99b8;
+      --accent:    #4a7fa8;
+      --accent2:   #6aabdb;
+      --glow:      rgba(74,127,168,0.5);
     }
-    html, body { width:100%; height:100%; background:var(--bg); font-family:'Inter',sans-serif; color:var(--text); overflow:hidden; }
 
-    /* OFFLINE */
+    html, body {
+      width: 100%; height: 100%;
+      background: var(--bg);
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    /* ═══════════════════ OFFLINE ═══════════════════ */
     #offline-screen {
-      position:fixed; inset:0; display:flex; flex-direction:column;
-      align-items:center; justify-content:center;
-      background:radial-gradient(ellipse at 50% 60%, #14103a 0%, #0a0a14 70%);
-      z-index:10; transition:opacity 0.6s ease;
+      position: fixed; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background:
+        radial-gradient(ellipse at 50% 30%, #162844 0%, #0b1623 65%),
+        radial-gradient(ellipse at 80% 80%, #0f2035 0%, transparent 60%);
+      z-index: 10;
+      transition: opacity 0.7s ease;
     }
+
+    /* Fondo con particulas sutiles */
     #offline-screen::before {
-      content:''; position:absolute; inset:0;
+      content: '';
+      position: absolute; inset: 0;
       background-image:
-        radial-gradient(circle at 20% 20%, rgba(108,78,242,0.12) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(167,139,250,0.08) 0%, transparent 50%);
-      animation:bgPulse 8s ease-in-out infinite alternate;
+        radial-gradient(circle at 15% 25%, rgba(74,127,168,0.10) 0%, transparent 45%),
+        radial-gradient(circle at 85% 75%, rgba(100,160,210,0.07) 0%, transparent 45%),
+        radial-gradient(circle at 50% 50%, rgba(26,45,66,0.5) 0%, transparent 70%);
+      animation: bgBreath 9s ease-in-out infinite alternate;
     }
-    @keyframes bgPulse { from{opacity:0.6} to{opacity:1} }
-
-    .offline-inner { position:relative; display:flex; flex-direction:column; align-items:center; gap:24px; }
-
-    .ring-wrap { position:relative; width:160px; height:160px; display:flex; align-items:center; justify-content:center; }
-    .ring { position:absolute; inset:0; border-radius:50%; border:2px solid rgba(108,78,242,0.4); animation:ringPulse 3s ease-in-out infinite; }
-    .ring:nth-child(2){ inset:-14px; opacity:0.3; animation-delay:0.5s; }
-    .ring:nth-child(3){ inset:-28px; opacity:0.15; animation-delay:1s; }
-    @keyframes ringPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.06)} }
-
-    .cross-icon { position:relative; z-index:1; width:72px; height:72px; filter:drop-shadow(0 0 18px rgba(108,78,242,0.8)); animation:crossGlow 3s ease-in-out infinite alternate; }
-    @keyframes crossGlow {
-      from{filter:drop-shadow(0 0 14px rgba(108,78,242,0.6))}
-      to{filter:drop-shadow(0 0 28px rgba(167,139,250,1))}
+    @keyframes bgBreath {
+      from { opacity: 0.7; }
+      to   { opacity: 1; }
     }
 
-    .offline-logo { font-size:13px; font-weight:600; letter-spacing:4px; text-transform:uppercase; color:var(--accent2); opacity:0.7; }
-    .offline-title { font-size:clamp(26px,5vw,46px); font-weight:700; color:#fff; text-align:center; }
-    .offline-sub { font-size:clamp(13px,2vw,16px); color:var(--text-muted); text-align:center; max-width:360px; line-height:1.7; }
-    .offline-clock { font-size:14px; font-weight:500; color:var(--accent2); letter-spacing:2px; opacity:0.8; }
-    .divider { width:60px; height:2px; background:linear-gradient(90deg,transparent,var(--accent),transparent); }
-
-    .next-check {
-      position:fixed; bottom:24px; right:24px;
-      background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1);
-      border-radius:100px; padding:8px 16px; font-size:12px; color:var(--text-muted);
-      backdrop-filter:blur(8px); display:flex; align-items:center; gap:8px;
+    .offline-inner {
+      position: relative;
+      display: flex; flex-direction: column;
+      align-items: center;
+      gap: 20px;
     }
-    .next-check-dot { width:6px; height:6px; border-radius:50%; background:var(--accent2); animation:blink 1.5s ease-in-out infinite; }
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
 
-    /* LIVE */
-    #live-screen { position:fixed; inset:0; display:none; flex-direction:column; background:#000; z-index:10; }
-    #live-screen.visible { display:flex; }
+    /* Logo con anillos y glow plateado */
+    .logo-wrap {
+      position: relative;
+      width: 190px; height: 190px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .logo-ring {
+      position: absolute; inset: 0;
+      border-radius: 50%;
+      border: 1.5px solid rgba(200,212,224,0.20);
+      animation: ringPulse 4s ease-in-out infinite;
+    }
+    .logo-ring:nth-child(2) { inset: -18px; opacity: 0.12; animation-delay: 0.8s; }
+    .logo-ring:nth-child(3) { inset: -36px; opacity: 0.06; animation-delay: 1.6s; }
+
+    @keyframes ringPulse {
+      0%, 100% { transform: scale(1); }
+      50%       { transform: scale(1.04); }
+    }
+
+    .logo-img {
+      position: relative; z-index: 2;
+      width: 150px; height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      filter:
+        drop-shadow(0 0 20px rgba(74,127,168,0.55))
+        drop-shadow(0 0 45px rgba(74,127,168,0.25));
+      animation: logoGlow 4s ease-in-out infinite alternate;
+    }
+    @keyframes logoGlow {
+      from { filter: drop-shadow(0 0 16px rgba(74,127,168,0.45)) drop-shadow(0 0 35px rgba(74,127,168,0.18)); }
+      to   { filter: drop-shadow(0 0 28px rgba(106,171,219,0.70)) drop-shadow(0 0 55px rgba(74,127,168,0.35)); }
+    }
+
+    /* Texto */
+    .offline-brand {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--accent2);
+      opacity: 0.75;
+      margin-top: 4px;
+    }
+
+    .divider {
+      width: 50px; height: 1.5px;
+      background: linear-gradient(90deg, transparent, var(--silver2), transparent);
+    }
+
+    .offline-title {
+      font-size: clamp(28px, 5vw, 50px);
+      font-weight: 800;
+      color: var(--text);
+      text-align: center;
+      letter-spacing: -1px;
+      text-shadow: 0 2px 30px rgba(74,127,168,0.3);
+    }
+
+    .offline-sub {
+      font-size: clamp(13px, 1.8vw, 16px);
+      font-weight: 400;
+      color: var(--text-muted);
+      text-align: center;
+      max-width: 380px;
+      line-height: 1.75;
+    }
+
+    .offline-clock {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--accent2);
+      letter-spacing: 3px;
+      margin-top: 4px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Badge de comprobacion */
+    .check-badge {
+      position: fixed; bottom: 28px; right: 28px;
+      background: rgba(15,30,48,0.85);
+      border: 1px solid rgba(200,212,224,0.12);
+      border-radius: 100px;
+      padding: 9px 18px;
+      font-size: 12px; color: var(--text-muted);
+      backdrop-filter: blur(12px);
+      display: flex; align-items: center; gap: 9px;
+    }
+    .check-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--accent2);
+      animation: blink 1.8s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.15} }
+
+    /* ═══════════════════ LIVE PLAYER ═══════════════════ */
+    #live-screen {
+      position: fixed; inset: 0;
+      display: none; flex-direction: column;
+      background: #000;
+      z-index: 10;
+    }
+    #live-screen.visible { display: flex; }
 
     .live-topbar {
-      position:absolute; top:0; left:0; right:0; z-index:20;
-      display:flex; align-items:center; justify-content:space-between;
-      padding:12px 20px;
-      background:linear-gradient(180deg,rgba(0,0,0,0.8) 0%,transparent 100%);
+      position: absolute; top: 0; left: 0; right: 0;
+      z-index: 20;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 22px;
+      background: linear-gradient(180deg, rgba(0,0,0,0.85) 0%, transparent 100%);
     }
-    .live-badge {
-      display:flex; align-items:center; gap:7px;
-      background:var(--red-live); border-radius:6px; padding:5px 12px;
-      font-size:13px; font-weight:700; letter-spacing:1px; color:#fff; text-transform:uppercase;
-      box-shadow:0 0 16px rgba(255,59,59,0.6);
-    }
-    .live-badge-dot { width:8px; height:8px; border-radius:50%; background:#fff; animation:blink 1s ease-in-out infinite; }
-    .live-channel-name { font-size:14px; font-weight:600; color:rgba(255,255,255,0.9); text-shadow:0 1px 6px rgba(0,0,0,0.8); }
-    #yt-player { width:100%; height:100%; border:none; }
 
-    /* TOAST */
-    #status-toast {
-      position:fixed; top:20px; left:50%;
-      transform:translateX(-50%) translateY(-80px);
-      background:rgba(20,20,40,0.95); border:1px solid rgba(255,255,255,0.1);
-      border-radius:12px; padding:10px 20px; font-size:13px; color:var(--text-muted);
-      backdrop-filter:blur(12px); transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
-      z-index:100; white-space:nowrap;
+    .live-badge {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--red-live);
+      border-radius: 6px; padding: 6px 14px;
+      font-size: 13px; font-weight: 700;
+      letter-spacing: 1.5px; color: #fff;
+      text-transform: uppercase;
+      box-shadow: 0 0 20px rgba(224,48,48,0.55);
     }
-    #status-toast.show { transform:translateX(-50%) translateY(0); }
+    .live-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #fff;
+      animation: blink 1s ease-in-out infinite;
+    }
+
+    .live-brand {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .live-logo {
+      width: 34px; height: 34px; border-radius: 50%;
+      object-fit: cover;
+      border: 1.5px solid rgba(200,212,224,0.3);
+    }
+    .live-name {
+      font-size: 15px; font-weight: 600;
+      color: rgba(255,255,255,0.92);
+      text-shadow: 0 1px 8px rgba(0,0,0,0.8);
+    }
+
+    #yt-player { width: 100%; height: 100%; border: none; }
+
+    /* Toast */
+    #toast {
+      position: fixed; top: 20px; left: 50%;
+      transform: translateX(-50%) translateY(-90px);
+      background: rgba(11,22,35,0.96);
+      border: 1px solid rgba(200,212,224,0.15);
+      border-radius: 12px; padding: 11px 22px;
+      font-size: 13px; color: var(--text-muted);
+      backdrop-filter: blur(14px);
+      transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+      z-index: 200; white-space: nowrap;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
   </style>
 </head>
 <body>
 
+  <!-- ── OFFLINE ──────────────────────────────────────── -->
   <div id="offline-screen">
     <div class="offline-inner">
-      <div class="ring-wrap">
-        <div class="ring"></div>
-        <div class="ring"></div>
-        <div class="ring"></div>
-        <svg class="cross-icon" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="30" y="8" width="12" height="56" rx="4" fill="url(#cg1)"/>
-          <rect x="8" y="26" width="56" height="12" rx="4" fill="url(#cg2)"/>
-          <defs>
-            <linearGradient id="cg1" x1="36" y1="8" x2="36" y2="64" gradientUnits="userSpaceOnUse">
-              <stop stop-color="#a78bfa"/><stop offset="1" stop-color="#6c4ef2"/>
-            </linearGradient>
-            <linearGradient id="cg2" x1="8" y1="32" x2="64" y2="32" gradientUnits="userSpaceOnUse">
-              <stop stop-color="#a78bfa"/><stop offset="1" stop-color="#6c4ef2"/>
-            </linearGradient>
-          </defs>
-        </svg>
+
+      <div class="logo-wrap">
+        <div class="logo-ring"></div>
+        <div class="logo-ring"></div>
+        <div class="logo-ring"></div>
+        <img class="logo-img" src="./logo.png" alt="PanBendito Logo" />
       </div>
-      <p class="offline-logo">Pam Bendito TV</p>
+
+      <p class="offline-brand">PanBendito TV</p>
       <div class="divider"></div>
       <h1 class="offline-title">Sin directo ahora mismo</h1>
-      <p class="offline-sub">Cuando empiece el culto en vivo, esta pantalla cambiara automaticamente al directo.</p>
+      <p class="offline-sub">
+        Cuando empiece el culto en vivo, esta pantalla<br>
+        cambiara automaticamente al directo.
+      </p>
       <p class="offline-clock" id="clock">--:--:--</p>
     </div>
-    <div class="next-check">
-      <div class="next-check-dot"></div>
+
+    <div class="check-badge">
+      <div class="check-dot"></div>
       <span>Comprobando en <span id="countdown">60</span>s</span>
     </div>
   </div>
 
+  <!-- ── LIVE ─────────────────────────────────────────── -->
   <div id="live-screen">
     <div class="live-topbar">
-      <div class="live-badge"><div class="live-badge-dot"></div>En directo</div>
-      <span class="live-channel-name">Pam Bendito TV</span>
+      <div class="live-badge">
+        <div class="live-dot"></div>
+        En directo
+      </div>
+      <div class="live-brand">
+        <img class="live-logo" src="./logo.png" alt="Logo" />
+        <span class="live-name">PanBendito TV</span>
+      </div>
     </div>
-    <iframe id="yt-player" src="" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen title="Directo Pam Bendito TV"></iframe>
+    <iframe
+      id="yt-player" src=""
+      allow="autoplay; encrypted-media; picture-in-picture"
+      allowfullscreen title="PanBendito TV — Directo"
+    ></iframe>
   </div>
 
-  <div id="status-toast"></div>
+  <div id="toast"></div>
 
   <script>
-    const STATUS_URL = './status.json';
+    const STATUS_URL     = './status.json';
     const CHECK_INTERVAL = 60000;
 
     const offlineScreen = document.getElementById('offline-screen');
@@ -152,63 +291,66 @@
     const ytPlayer      = document.getElementById('yt-player');
     const clockEl       = document.getElementById('clock');
     const countdownEl   = document.getElementById('countdown');
-    const toast         = document.getElementById('status-toast');
+    const toast         = document.getElementById('toast');
     let currentVideoId  = null;
-    let countdownSecs   = 60;
 
-    function updateClock() {
-      clockEl.textContent = new Date().toLocaleTimeString('es-ES', {hour12:false});
+    // Reloj
+    function tick() {
+      clockEl.textContent = new Date().toLocaleTimeString('es-ES', { hour12: false });
     }
-    setInterval(updateClock, 1000);
-    updateClock();
+    setInterval(tick, 1000); tick();
 
+    // Cuenta atras
     function startCountdown() {
-      countdownSecs = 60;
+      let s = 60;
+      countdownEl.textContent = s;
       const t = setInterval(() => {
-        countdownSecs = Math.max(0, countdownSecs - 1);
-        countdownEl.textContent = countdownSecs;
-        if (countdownSecs <= 0) clearInterval(t);
+        s = Math.max(0, s - 1);
+        countdownEl.textContent = s;
+        if (s <= 0) clearInterval(t);
       }, 1000);
     }
 
+    // Toast
     function showToast(msg) {
       toast.textContent = msg;
       toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 3500);
+      setTimeout(() => toast.classList.remove('show'), 4000);
     }
 
-    async function checkLiveStatus() {
+    // Comprobar estado
+    async function checkStatus() {
       try {
         const res  = await fetch(STATUS_URL + '?t=' + Date.now());
-        if (!res.ok) throw new Error('no status.json');
+        if (!res.ok) throw new Error();
         const data = await res.json();
-        if (data.live && data.videoId) { goLive(data.videoId); }
-        else { goOffline(); }
-      } catch(e) { goOffline(); }
+        if (data.live && data.videoId) goLive(data.videoId);
+        else goOffline();
+      } catch { goOffline(); }
       startCountdown();
     }
 
     function goLive(videoId) {
       if (currentVideoId === videoId) return;
       currentVideoId = videoId;
-      ytPlayer.src = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0&modestbranding=1';
+      ytPlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
       offlineScreen.style.opacity = '0';
-      setTimeout(() => offlineScreen.style.display = 'none', 600);
+      setTimeout(() => offlineScreen.style.display = 'none', 700);
       liveScreen.classList.add('visible');
-      showToast('Directo detectado. Conectando...');
+      showToast('Directo detectado — conectando...');
     }
 
     function goOffline() {
       if (!liveScreen.classList.contains('visible') && currentVideoId === null) return;
       currentVideoId = null;
-      ytPlayer.src   = '';
+      ytPlayer.src = '';
       liveScreen.classList.remove('visible');
       offlineScreen.style.display = '';
       requestAnimationFrame(() => offlineScreen.style.opacity = '1');
     }
 
-    checkLiveStatus();
-    setInterval(checkLiveStatus, CHECK_INTERVAL);
+    checkStatus();
+    setInterval(checkStatus, CHECK_INTERVAL);
   </script>
 </body>
 </html>
