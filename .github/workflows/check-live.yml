@@ -2,8 +2,8 @@ name: Detectar Directo YouTube
 
 on:
   schedule:
-    - cron: '*/5 * * * *'   # cada 5 minutos
-  workflow_dispatch:          # permite ejecutarlo manualmente
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -18,33 +18,45 @@ jobs:
       - name: Comprobar si hay directo en YouTube
         id: check
         run: |
-          CHANNEL_URL="https://www.youtube.com/@pambenditoTV/live"
+          CHANNEL_ID="UC41gFAr8NZwdUYkmRtYFNgw"
           
-          # Descargamos la pagina del directo con User-Agent de navegador
-          RESPONSE=$(curl -sL \
-            -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36" \
-            -H "Accept-Language: es-ES,es;q=0.9" \
-            "$CHANNEL_URL")
+          echo ">>> Obteniendo videos recientes del RSS feed..."
+          RSS=$(curl -sL \
+            -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" \
+            "https://www.youtube.com/feeds/videos.xml?channel_id=$CHANNEL_ID")
           
-          # Buscamos el videoId en la respuesta
-          VIDEO_ID=$(echo "$RESPONSE" | grep -oP '"videoId":"[^"]{11}"' | head -1 | grep -oP '(?<="videoId":")[^"]+')
+          # Extraer los ultimos 5 IDs de video del RSS
+          VIDEO_IDS=$(echo "$RSS" | grep -oP '(?<=<yt:videoId>)[^<]+' | head -5)
+          echo "Videos a comprobar: $VIDEO_IDS"
           
-          # Verificamos que hay liveBroadcastContent: live
-          IS_LIVE=$(echo "$RESPONSE" | grep -c '"liveBroadcastContent":"live"' || true)
+          LIVE_VIDEO_ID=""
+          LIVE_TITLE=""
           
-          TITLE=""
-          if [ -n "$VIDEO_ID" ] && [ "$IS_LIVE" -gt "0" ]; then
-            echo "LIVE=true" >> $GITHUB_OUTPUT
-            echo "VIDEO_ID=$VIDEO_ID" >> $GITHUB_OUTPUT
-            # Intentamos obtener el titulo
-            TITLE=$(echo "$RESPONSE" | grep -oP '"title":"[^"]*"' | head -1 | sed 's/"title":"//;s/"//')
-            echo "TITLE=$TITLE" >> $GITHUB_OUTPUT
-            echo ">>> DIRECTO DETECTADO: $VIDEO_ID"
+          for VID in $VIDEO_IDS; do
+            echo ">>> Comprobando video: $VID"
+            PAGE=$(curl -sL \
+              -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" \
+              -H "Accept-Language: es-ES,es;q=0.9,en;q=0.8" \
+              "https://www.youtube.com/watch?v=$VID")
+            
+            if echo "$PAGE" | grep -q '"liveBroadcastContent":"live"'; then
+              echo ">>> DIRECTO DETECTADO: $VID"
+              LIVE_VIDEO_ID="$VID"
+              LIVE_TITLE=$(echo "$PAGE" | grep -oP '"title":\{"runs":\[.*?\{"text":"[^"]*"' | grep -oP '(?<="text":")[^"]+' | head -1 || echo "")
+              break
+            else
+              echo "    No es directo: $VID"
+            fi
+          done
+          
+          if [ -n "$LIVE_VIDEO_ID" ]; then
+            echo "LIVE=true"        >> $GITHUB_OUTPUT
+            echo "VIDEO_ID=$LIVE_VIDEO_ID" >> $GITHUB_OUTPUT
+            echo "TITLE=$LIVE_TITLE"      >> $GITHUB_OUTPUT
           else
-            echo "LIVE=false" >> $GITHUB_OUTPUT
-            echo "VIDEO_ID=" >> $GITHUB_OUTPUT
-            echo "TITLE=" >> $GITHUB_OUTPUT
-            echo ">>> Sin directo actualmente"
+            echo "LIVE=false"       >> $GITHUB_OUTPUT
+            echo "VIDEO_ID="        >> $GITHUB_OUTPUT
+            echo "TITLE="           >> $GITHUB_OUTPUT
           fi
 
       - name: Actualizar status.json
@@ -55,11 +67,14 @@ jobs:
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           
           if [ "$LIVE" = "true" ]; then
-            echo "{\"live\": true, \"videoId\": \"$VIDEO_ID\", \"title\": \"$TITLE\", \"updatedAt\": \"$TIMESTAMP\"}" > status.json
+            printf '{"live": true, "videoId": "%s", "title": "%s", "updatedAt": "%s"}' \
+              "$VIDEO_ID" "$TITLE" "$TIMESTAMP" > status.json
           else
-            echo "{\"live\": false, \"videoId\": null, \"title\": \"\", \"updatedAt\": \"$TIMESTAMP\"}" > status.json
+            printf '{"live": false, "videoId": null, "title": "", "updatedAt": "%s"}' \
+              "$TIMESTAMP" > status.json
           fi
           
+          echo ">>> status.json actualizado:"
           cat status.json
 
       - name: Commit y push si hay cambios
@@ -70,7 +85,6 @@ jobs:
           if git diff --staged --quiet; then
             echo "Sin cambios en status.json"
           else
-            git commit -m "bot: actualizar estado del directo [$(date -u +'%H:%M UTC')]"
+            git commit -m "bot: estado del directo [$(date -u +'%H:%M UTC')]"
             git push
-            echo "Status.json actualizado y subido"
           fi
